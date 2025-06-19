@@ -51,10 +51,23 @@ def parse_args():
     
     return json_path
 
+def collect_statistics(data):
+    statistics = {}
+    messages = data['messages']
+    statistics['total_messages'] = len(messages)
+
+    return statistics
 
 
 def main():
-    print(parse_args())
+    json_path = parse_args()
+
+    with open(json_path, 'r', encoding = 'utf-8') as file:
+        data = json.load(file)
+
+    statistics = collect_statistics(data)
+    
+    print(statistics)
 
 if __name__ == "__main__":
     main()
