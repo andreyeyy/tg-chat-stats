@@ -101,7 +101,17 @@ def collect_statistics(data):
     statistics['user2.percent_messages'] = len(user2_messages) / len(messages)
 
     start_time = int(messages[0]['date_unixtime'])
-    statistics['chat_start_date'] = datetime.datetime.fromtimestamp(start_time).strftime("%B %d, %Y")
+    end_time = int(messages[len(messages)-1]['date_unixtime'])
+    statistics['start_date_unix'] = start_time
+    statistics['end_date_unix'] = end_time
+
+    statistics['start_date'] = datetime.datetime.fromtimestamp(start_time).strftime("%B %d, %Y")
+    statistics['end_date'] = datetime.datetime.fromtimestamp(end_time).strftime("%B %d, %Y")
+
+    total_seconds = end_time - start_time
+    total_days = total_seconds / 86400
+
+    statistics['total_days'] = total_days
 
     return statistics
 
@@ -110,7 +120,7 @@ def sanitize_statistics(stats):
     result = {}
 
     #list of values to be copied to result from stats
-    to_copy = ['user1', 'user2', 'total_messages', 'user1.total_messages', 'user2.total_messages'] 
+    to_copy = ['user1', 'user2', 'total_messages', 'user1.total_messages', 'user2.total_messages', 'start_date', 'end_date'] 
 
     for key in to_copy:
         result[key] = str(stats[key])
@@ -120,6 +130,12 @@ def sanitize_statistics(stats):
 
     for key in to_round:
         result[key] = "{:.2f}".format(stats[key])
+
+    #list of numbers to be fully rounded to an integer and copied to result from stats
+    to_round = ['total_days']
+
+    for key in to_round:
+        result[key] = str(int(stats[key]))
 
     return result
 
