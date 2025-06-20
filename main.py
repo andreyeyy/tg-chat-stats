@@ -97,11 +97,31 @@ def collect_statistics(data):
     statistics['user1.total_messages'] = len(user1_messages)
     statistics['user2.total_messages'] = len(user2_messages)
 
+    statistics['user1.percent_messages'] = len(user1_messages) / len(messages)
+    statistics['user2.percent_messages'] = len(user2_messages) / len(messages)
+
     start_time = int(messages[0]['date_unixtime'])
     statistics['chat_start_date'] = datetime.datetime.fromtimestamp(start_time).strftime("%B %d, %Y")
 
     return statistics
 
+
+def sanitize_statistics(stats):
+    result = {}
+
+    #list of values to be copied to result from stats
+    to_copy = ['user1', 'user2', 'total_messages', 'user1.total_messages', 'user2.total_messages'] 
+
+    for key in to_copy:
+        result[key] = str(stats[key])
+
+    #list of numbers to be rounded and copied to result from stats
+    to_round = ['user1.percent_messages', 'user2.percent_messages']
+
+    for key in to_round:
+        result[key] = "{:.2f}".format(stats[key])
+
+    return result
 
 
 def generate_result(stats):
@@ -113,8 +133,10 @@ def generate_result(stats):
     with open(html_path, "r", encoding="utf-8") as file:
         content = file.read()
 
-    for key in stats:
-        content = content.replace("{" + key + "}", str(stats[key]))
+    sanitized_stats = sanitize_statistics(stats)
+
+    for key in sanitized_stats:
+        content = content.replace("{" + key + "}", sanitized_stats[key])
 
     with open(html_path, "w", encoding="utf-8") as file:
         file.write(content)
