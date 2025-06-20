@@ -2,7 +2,7 @@
 ⚠️⚠️ **THIS PROJECT IS UNDER ACTIVE DEVELOPMENT AND IS NOT YET FUNCTIONAL** ⚠️⚠️
 
 ### What is it?  
-A python tool that generates a `report.pdf` which contains some statistics about your telegram chat with a friend
+A python tool that generates a simple web page which contains some statistics about your telegram chat with a friend
 ### How to use it?
 
 1. Export your chat history as a json file in telegram:

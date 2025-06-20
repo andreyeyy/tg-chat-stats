@@ -1,11 +1,9 @@
 import sys
 import os
 import json
+import datetime
 
 import matplotlib
-from fpdf import FPDF
-
-PDF_OUTPUT_DIR = "result.pdf"
 
 def parse_args():
     DEFAULT_INPUT_DIRECTORY = "input_files"
@@ -54,19 +52,27 @@ def parse_args():
     
     return json_path
 
+
+
+
 def collect_statistics(data):
     statistics = {}
     messages = data['messages']
     statistics['total_messages'] = len(messages)
+    statistics['user2'] = data['name']
+    for msg in messages:
+        if 'from' in msg and msg['from'] != statistics['user2']:
+            statistics['user1'] = msg['from']
+    user1_messages = [msg for msg in messages if 'from' in msg and msg['from'] == statistics['user1']]
+    user2_messages = [msg for msg in messages if 'from' in msg and msg['from'] == statistics['user2']]
+    statistics['user1.total_messages'] = len(user1_messages)
+    statistics['user2.total_messages'] = len(user2_messages)
+
+    start_time = int(messages[0]['date_unixtime'])
+    statistics['chat_start_date'] = datetime.datetime.fromtimestamp(start_time).strftime("%B %d, %Y")
 
     return statistics
 
-def create_pdf(statistics):
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", size=12)
-    pdf.cell(200, 10, txt="Hello World!", ln=True, align='C')
-    pdf.output(PDF_OUTPUT_DIR)
 
 def main():
     json_path = parse_args()
@@ -77,8 +83,6 @@ def main():
     statistics = collect_statistics(data)
     
     print(statistics)
-
-    create_pdf(statistics)
 
 if __name__ == "__main__":
     main()
