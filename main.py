@@ -2,8 +2,37 @@ import sys
 import os
 import json
 import datetime
+import shutil
 
 import matplotlib
+
+RESULT_FOLDER = "result"
+
+def clean_folder(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+        return
+    
+    for filename in os.listdir(path):
+        file_path = os.path.join(path, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print(f'Failed to delete {file_path}. Reason: {e}')
+
+def copy_all(src, dst):
+
+    for item in os.listdir(src):
+        src_path = os.path.join(src, item)
+        dst_path = os.path.join(dst, item)
+
+        if os.path.isdir(src_path):
+            shutil.copytree(src_path, dst_path, dirs_exist_ok=True)
+        else:
+            shutil.copy2(src_path, dst_path)
 
 def parse_args():
     DEFAULT_INPUT_DIRECTORY = "input_files"
@@ -74,6 +103,23 @@ def collect_statistics(data):
     return statistics
 
 
+
+def generate_result(stats):
+    clean_folder(RESULT_FOLDER)
+    copy_all("template", RESULT_FOLDER)
+
+    html_path = os.path.join(RESULT_FOLDER, "index.html")
+
+    with open(html_path, "r", encoding="utf-8") as file:
+        content = file.read()
+
+    for key in stats:
+        content = content.replace("{" + key + "}", str(stats[key]))
+
+    with open(html_path, "w", encoding="utf-8") as file:
+        file.write(content)
+
+
 def main():
     json_path = parse_args()
 
@@ -83,6 +129,8 @@ def main():
     statistics = collect_statistics(data)
     
     print(statistics)
+
+    generate_result(statistics)
 
 if __name__ == "__main__":
     main()
