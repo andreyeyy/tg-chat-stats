@@ -3,6 +3,9 @@ import os
 import json
 
 import matplotlib
+from fpdf import FPDF
+
+PDF_OUTPUT_DIR = "result.pdf"
 
 def parse_args():
     DEFAULT_INPUT_DIRECTORY = "input_files"
@@ -58,6 +61,12 @@ def collect_statistics(data):
 
     return statistics
 
+def create_pdf(statistics):
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    pdf.cell(200, 10, txt="Hello World!", ln=True, align='C')
+    pdf.output(PDF_OUTPUT_DIR)
 
 def main():
     json_path = parse_args()
@@ -68,6 +77,8 @@ def main():
     statistics = collect_statistics(data)
     
     print(statistics)
+
+    create_pdf(statistics)
 
 if __name__ == "__main__":
     main()

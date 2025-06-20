@@ -2,7 +2,7 @@
 ⚠️⚠️ **THIS PROJECT IS UNDER ACTIVE DEVELOPMENT AND IS NOT YET FUNCTIONAL** ⚠️⚠️
 
 ### What is it?  
-A python tool that generates a nice local html page which displays some statistics about your telegram chat with a friend
+A python tool that generates a `report.pdf` which contains some statistics about your telegram chat with a friend
 ### How to use it?
 
 1. Export your chat history as a json file in telegram:
@@ -10,8 +10,8 @@ A python tool that generates a nice local html page which displays some statisti
 ![image](https://github.com/user-attachments/assets/9db0605a-f6a2-405c-a12d-e432563f6422)
 ![IMG_20250619_204127](https://github.com/user-attachments/assets/4f50e09f-d318-474d-ad85-257540854579)
 
-3. Download [python](https://www.python.org/downloads/) if you haven't yet
-4. Clone this repository
+2. Download [python](https://www.python.org/downloads/) if you haven't yet
+3. Clone this repository
 ```bash
 git clone https://github.com/andreyeyy/tg-chat-stats
 ```
