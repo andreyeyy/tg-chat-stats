@@ -111,6 +111,8 @@ def collect_statistics(data):
 
     statistics['total_days'] = total_days
 
+    statistics['avg_messages_per_day'] = len(messages) / total_days
+
     return statistics
 
 
@@ -130,7 +132,7 @@ def sanitize_statistics(stats):
         result[key] = "{:.2f}".format(stats[key])
 
     #list of numbers to be fully rounded to an integer and copied to result from stats
-    to_round = ['total_days']
+    to_round = ['total_days', 'avg_messages_per_day']
 
     for key in to_round:
         result[key] = str(int(stats[key]))
