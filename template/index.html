@@ -33,23 +33,69 @@
     <label class="text">Total days: {total_days} days</label>
     <label class="text">Messages from {user1}: {user1.total_messages}</label>
     <label class="text">Messages from {user2}: {user2.total_messages}</label>
-    <div id="pieChart" style="width: 400px; height: 400px;"></div>
+    <div id="pie1" style="width: 500px; height: 500px;"></div>
     <label class="text">Average messages per day: {avg_messages_per_day}</label>
+    <div id="bar1" style="width:1000px;height:400px;"></div>
+    <label class="text">Number of total distinct words: {total_different_words}</label>
+    <div id="bar2" style="width:1200px;height:400px;"></div>
+    <label class="text">Longest conversation streak (days with messages): {longest_sterak} (From {longest_sterak.first_day} to {longest_sterak.last_day})</label>
 
     <script>
-        const data = [{
+
+        //=============================================================
+        // Message distribution pie chart
+
+        var data = [{
         values: [{user1.percent_messages}, {user2.percent_messages}],
         labels: ['{user1}', '{user2}'],
         type: 'pie',
         hoverinfo: 'none'
         }];
 
-        const layout = {
+        var layout = {
             title: 'Message distribution',
             transition: { duration: 0 }
             };
 
-        Plotly.newPlot('pieChart', data, layout, { staticPlot: true });
+        Plotly.newPlot('pie1', data, layout, { staticPlot: true });
+
+
+        //=============================================================
+        // Common words bar chart
+
+        var trace = {
+            x: [{top_words}],
+            y: [{top_words_count}],
+            type: 'bar'
+        };
+
+        var data = [trace];
+
+        var layout = {
+            title: 'Most common words',
+            xaxis: { title: 'Word' },
+            yaxis: { title: 'Count' }
+        };
+
+        Plotly.newPlot('bar1', data, layout, { staticPlot: true });
+
+        //=============================================================
+        // Common long words bar chart
+
+        var trace = {
+            x: [{top_long_words}],
+            y: [{top_long_words_count}],
+            type: 'bar'
+        };
+
+        var data = [trace];
+
+        var layout = {
+            title: 'Most common long words (over 3 characters)',
+            xaxis: { title: 'Word' },
+            yaxis: { title: 'Count' }
+        };
+        Plotly.newPlot('bar2', data, layout, { staticPlot: true });
     </script>
 </body>
 </html>

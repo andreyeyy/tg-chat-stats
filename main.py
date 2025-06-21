@@ -34,18 +34,10 @@ def copy_all(src, dst):
 
 def parse_args():
     DEFAULT_INPUT_DIRECTORY = "input_files"
-    USAGE = ""
+    USAGE = "py main.py"
 
     if not os.path.exists(DEFAULT_INPUT_DIRECTORY):
         os.makedirs(DEFAULT_INPUT_DIRECTORY)
-
-    if os.name == 'nt':
-        USAGE = "Usage: venv\\Scripts\\python main.py <path_to_json>"
-    elif os.name == 'posix':
-        USAGE = "Usage: venv/bin/python main.py <path_to_json>"
-    else:
-        print("Unknown OS")
-        sys.exit(1)
     
     args = sys.argv
 
@@ -113,6 +105,31 @@ def collect_statistics(data):
 
     statistics['avg_messages_per_day'] = len(messages) / total_days
 
+    common_words = {}
+    common_long_words = {}
+
+    for msg in messages:
+        if not 'text' in msg or not isinstance(msg['text'], str):
+            continue
+        for word in msg['text'].split():
+            word = word.lower()
+            if (len(word) > 3):
+                if not word in common_long_words:
+                    common_long_words[word] = 1
+                else:
+                    common_long_words[word] += 1
+            
+            if not word in common_words:
+                common_words[word] = 1
+            else:
+                common_words[word] += 1
+
+    statistics['total_different_words'] = len(common_words)
+
+    top_words = dict(sorted(common_words.items(), key=lambda item: item[1], reverse=True)[:20])
+    top_long_words = dict(sorted(common_long_words.items(), key=lambda item: item[1], reverse=True)[:20])
+    statistics['top_words'] = top_words
+    statistics['top_long_words'] = top_long_words
     return statistics
 
 
@@ -120,7 +137,7 @@ def sanitize_statistics(stats):
     result = {}
 
     #list of values to be copied to result from stats
-    to_copy = ['user1', 'user2', 'total_messages', 'user1.total_messages', 'user2.total_messages', 'start_date', 'end_date'] 
+    to_copy = ['user1', 'user2', 'total_messages', 'user1.total_messages', 'user2.total_messages', 'start_date', 'end_date', 'total_different_words'] 
 
     for key in to_copy:
         result[key] = str(stats[key])
@@ -136,6 +153,20 @@ def sanitize_statistics(stats):
 
     for key in to_round:
         result[key] = str(int(stats[key]))
+
+    #list of dictionaries to be concatenated into a string (to then be used to build a chart)
+    to_concatenate = ['top_words', 'top_long_words']
+
+    for key in to_concatenate:
+        result[key] = ""
+        result[key+'_count'] = ""
+
+        for i, word in enumerate(stats[key]):
+            comma = ", "
+            if i == len(stats[key]) - 1:
+                comma = ""
+            result[key] += "'" + word + "'" + comma
+            result[key+'_count'] += str(stats[key][word]) + comma
 
     return result
 
@@ -165,8 +196,6 @@ def main():
         data = json.load(file)
 
     statistics = collect_statistics(data)
-    
-    print(statistics)
 
     generate_result(statistics)
 
