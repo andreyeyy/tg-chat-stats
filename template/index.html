@@ -4,6 +4,7 @@
     <meta charset="UTF-8"/>
     <title>Telegram Statistics</title>
     <link rel="stylesheet" href="styles.css"/>
+    <script src="https://cdn.plot.ly/plotly-basic-latest.min.js"></script>
 </head>
 <body>
     <label class="title">Chat: {user1} and {user2}</label>
@@ -13,5 +14,22 @@
     <label class="text">Total days: {total_days} days</label>
     <label class="text">Messages from {user1}: {user1.total_messages}</label>
     <label class="text">Messages from {user2}: {user2.total_messages}</label>
+    <div id="pieChart" style="width: 400px; height: 400px;"></div>
+
+    <script>
+        const data = [{
+        values: [{user1.percent_messages}, {user2.percent_messages}],
+        labels: ['{user1}', '{user2}'],
+        type: 'pie',
+        hoverinfo: 'none'
+        }];
+
+        const layout = {
+            title: 'Message distribution',
+            transition: { duration: 0 }
+            };
+
+        Plotly.newPlot('pieChart', data, layout, { staticPlot: true });
+    </script>
 </body>
 </html>
