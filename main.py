@@ -4,8 +4,6 @@ import json
 import datetime
 import shutil
 
-import matplotlib
-
 RESULT_FOLDER = "result"
 
 def clean_folder(path):

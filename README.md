@@ -1,5 +1,5 @@
 # Telegram chat statistics
-⚠️⚠️ **THIS PROJECT IS UNDER ACTIVE DEVELOPMENT AND IS NOT YET FUNCTIONAL** ⚠️⚠️
+⚠️⚠️ **THIS PROJECT IS UNDER ACTIVE DEVELOPMENT AND IS NOT YET FULLY FUNCTIONAL** ⚠️⚠️
 
 ### What is it?  
 A python tool that generates a simple web page which contains some statistics about your telegram chat with a friend
@@ -16,29 +16,8 @@ A python tool that generates a simple web page which contains some statistics ab
 git clone https://github.com/andreyeyy/tg-chat-stats
 ```
 4. Put the acquired `result.json` in the `input_files` folder (create the folder `input_files` if it doesn't exist)
-5. Create a new python environment
- ```bash
-py -m venv venv
- ```
-6. Install dependencies from `requirements.txt`
-
-   - **On Windows:**
-     ```bash
-     venv\Scripts\pip install -r requirements.txt
-     ```
-
-   - **On Linux/macOS:**
-     ```bash
-     venv/bin/pip install -r requirements.txt
-     ```
-7. Run the script with
-   - **On Windows:**
-     ```bash
-     venv\Scripts\python main.py
-     ```
-  
-   - **On Linux/macOS:**
-     ```bash
-     venv/bin/python main.py
-     ```
+5. Run the script with
+```bash
+py main.py
+```
 Hint: you can also add an argument after `main.py` with the path to the desired json file if you don't want to use the `input_files` folder 
