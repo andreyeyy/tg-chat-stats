@@ -72,7 +72,8 @@ def parse_args():
     return json_path
 
 
-
+def unix_to_string(unix_date):
+    return datetime.datetime.fromtimestamp(unix_date).strftime("%B %d, %Y")
 
 def collect_statistics(data):
     statistics = {}
@@ -95,8 +96,8 @@ def collect_statistics(data):
     statistics['start_date_unix'] = start_time
     statistics['end_date_unix'] = end_time
 
-    statistics['start_date'] = datetime.datetime.fromtimestamp(start_time).strftime("%B %d, %Y")
-    statistics['end_date'] = datetime.datetime.fromtimestamp(end_time).strftime("%B %d, %Y")
+    statistics['start_date'] = unix_to_string(start_time)
+    statistics['end_date'] = unix_to_string(end_time)
 
     total_seconds = end_time - start_time
     total_days = total_seconds / 86400
@@ -130,6 +131,32 @@ def collect_statistics(data):
     top_long_words = dict(sorted(common_long_words.items(), key=lambda item: item[1], reverse=True)[:20])
     statistics['top_words'] = top_words
     statistics['top_long_words'] = top_long_words
+
+
+    last_message_day = int(messages[0]['date_unixtime']) // 86400
+    current_streak = 1
+    longest_streak = 0
+    last_date = 0
+
+    for msg in messages:
+        day = int(msg['date_unixtime']) // 86400
+
+        if day == last_message_day:
+            continue
+        elif day == last_message_day + 1:
+            current_streak += 1
+        else:
+            current_streak = 1
+
+        if current_streak > longest_streak:
+            longest_streak = current_streak
+            last_date = day
+
+        last_message_day = day
+
+    statistics['longest_streak'] = longest_streak
+    statistics['longest_streak.first_date'] = unix_to_string((last_date - longest_streak + 1) * 86400)
+    statistics['longest_streak.last_date'] = unix_to_string(last_date * 86400)
     return statistics
 
 
@@ -137,7 +164,7 @@ def sanitize_statistics(stats):
     result = {}
 
     #list of values to be copied to result from stats
-    to_copy = ['user1', 'user2', 'total_messages', 'user1.total_messages', 'user2.total_messages', 'start_date', 'end_date', 'total_different_words'] 
+    to_copy = ['user1', 'user2', 'total_messages', 'user1.total_messages', 'user2.total_messages', 'start_date', 'end_date', 'total_different_words', 'longest_streak', 'longest_streak.first_date', 'longest_streak.last_date'] 
 
     for key in to_copy:
         result[key] = str(stats[key])
