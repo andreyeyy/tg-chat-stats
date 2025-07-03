@@ -1,5 +1,4 @@
 # Telegram chat statistics
-⚠️⚠️ **THIS PROJECT IS UNDER ACTIVE DEVELOPMENT AND IS NOT YET FULLY FUNCTIONAL** ⚠️⚠️
 
 ### What is it?  
 A python tool that generates a simple web page which contains some statistics about your telegram chat with a friend

@@ -157,6 +157,26 @@ def collect_statistics(data):
     statistics['longest_streak'] = longest_streak
     statistics['longest_streak.first_date'] = unix_to_string((last_date - longest_streak + 1) * 86400)
     statistics['longest_streak.last_date'] = unix_to_string(last_date * 86400)
+
+
+    message_time_distribution = [0] * 24 # an array with 24 zeros (24 hours in a day)
+
+    for msg in messages:
+        date = msg['date']
+        hour = int(date.split('T', 1)[1][:2]) # this turns "2023-01-31T09:05:28" into int 9
+        message_time_distribution[hour] += 1
+
+    statistics['message_time_distribution_values'] = message_time_distribution
+    hours = list(range(24))
+    for i, value in enumerate(hours):
+        hour_string = '0'
+        if value > 9:
+            hour_string = ''
+        hour_string += str(value)
+        hours[i] = hour_string + ':00'
+
+
+    statistics['message_time_distribution_hours'] = hours
     return statistics
 
 
@@ -194,6 +214,19 @@ def sanitize_statistics(stats):
                 comma = ""
             result[key] += "'" + word + "'" + comma
             result[key+'_count'] += str(stats[key][word]) + comma
+
+
+    #list of arrays to be concatenated into a string (to then be used to build a chart)
+    to_concatenate = ['message_time_distribution_values', 'message_time_distribution_hours']
+
+    for key in to_concatenate:
+        result[key] = ""
+
+        for i, value in enumerate(stats[key]):
+            comma = ", "
+            if i == len(stats[key]) - 1:
+                comma = ""
+            result[key] += "'" + str(value) + "'" + comma
 
     return result
 

@@ -39,6 +39,7 @@
     <label class="text">Number of total distinct words: {total_different_words}</label>
     <div id="bar2" style="width:1200px;height:400px;"></div>
     <label class="text">Longest conversation streak (days with messages): {longest_streak} days (From {longest_streak.first_date} to {longest_streak.last_date})</label>
+    <div id="bar3" style="width:1200px;height:400px;"></div>
 
     <script>
 
@@ -96,6 +97,25 @@
             yaxis: { title: 'Count' }
         };
         Plotly.newPlot('bar2', data, layout, { staticPlot: true });
+
+
+        //=============================================================
+        // Hourly message distribution bar chart
+
+        var trace = {
+            x: [{message_time_distribution_hours}],
+            y: [{message_time_distribution_values}],
+            type: 'bar'
+        };
+
+        var data = [trace];
+
+        var layout = {
+            title: 'Hourly message count distribution',
+            xaxis: { title: 'Hour' },
+            yaxis: { title: 'Count' }
+        };
+        Plotly.newPlot('bar3', data, layout, { staticPlot: true });
     </script>
 </body>
 </html>
