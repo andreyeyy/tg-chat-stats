@@ -177,6 +177,36 @@ def collect_statistics(data):
 
 
     statistics['message_time_distribution_hours'] = hours
+
+    activity_splits = 20
+
+    statistics['activity_over_time'] = [0] * activity_splits
+    statistics['activity_over_time_dates'] = []
+    
+
+    split_size_seconds = total_seconds / activity_splits
+
+    statistics['activity_over_time_period_size'] = int(split_size_seconds / 86400)
+
+    print(f"split_size_seconds: {split_size_seconds}")
+
+    prev_slot = 0
+    for msg in messages:
+        unix_date = int(msg['date_unixtime']) 
+        curr_slot = int((unix_date - start_time) / split_size_seconds)
+        
+        if curr_slot != prev_slot:
+            prev_slot = curr_slot
+
+            date_string = unix_to_string(unix_date - (split_size_seconds / 2))
+            statistics['activity_over_time_dates'].append(date_string)
+
+        if curr_slot >= activity_splits:
+            break # probably not the best way to do it but whatever
+
+        statistics['activity_over_time'][curr_slot] += 1
+
+    print(statistics)
     return statistics
 
 
@@ -196,7 +226,7 @@ def sanitize_statistics(stats):
         result[key] = "{:.2f}".format(stats[key])
 
     #list of numbers to be fully rounded to an integer and copied to result from stats
-    to_round = ['total_days', 'avg_messages_per_day']
+    to_round = ['total_days', 'avg_messages_per_day', 'activity_over_time_period_size']
 
     for key in to_round:
         result[key] = str(int(stats[key]))
@@ -217,7 +247,7 @@ def sanitize_statistics(stats):
 
 
     #list of arrays to be concatenated into a string (to then be used to build a chart)
-    to_concatenate = ['message_time_distribution_values', 'message_time_distribution_hours']
+    to_concatenate = ['message_time_distribution_values', 'message_time_distribution_hours', 'activity_over_time', 'activity_over_time_dates']
 
     for key in to_concatenate:
         result[key] = ""
@@ -258,6 +288,8 @@ def main():
     statistics = collect_statistics(data)
 
     generate_result(statistics)
+
+    print("Done! Check out result/index.html")
 
 if __name__ == "__main__":
     main()

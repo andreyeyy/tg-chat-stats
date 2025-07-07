@@ -40,6 +40,7 @@
     <div id="bar2" style="width:1200px;height:400px;"></div>
     <label class="text">Longest conversation streak (days with messages): {longest_streak} days (From {longest_streak.first_date} to {longest_streak.last_date})</label>
     <div id="bar3" style="width:1200px;height:400px;"></div>
+    <div id="scatter1" style="width:1200px;height:400px;"></div>
 
     <script>
 
@@ -78,7 +79,7 @@
             yaxis: { title: 'Count' }
         };
 
-        Plotly.newPlot('bar1', data, layout, { staticPlot: true });
+        Plotly.newPlot('bar1', data, layout, { staticPlot: false });
 
         //=============================================================
         // Common long words bar chart
@@ -96,7 +97,7 @@
             xaxis: { title: 'Word' },
             yaxis: { title: 'Count' }
         };
-        Plotly.newPlot('bar2', data, layout, { staticPlot: true });
+        Plotly.newPlot('bar2', data, layout, { staticPlot: false });
 
 
         //=============================================================
@@ -115,7 +116,29 @@
             xaxis: { title: 'Hour' },
             yaxis: { title: 'Count' }
         };
-        Plotly.newPlot('bar3', data, layout, { staticPlot: true });
+        Plotly.newPlot('bar3', data, layout, { staticPlot: false });
+
+        //=============================================================
+        // Activity over time graph
+
+        var trace = {
+            x: [{activity_over_time_dates}],
+            y: [{activity_over_time}],
+            type: 'scatter',
+            mode: 'lines'
+        };
+
+        var data = [trace];
+
+        var layout = {
+            title: 'Activity over time (each period is {activity_over_time_period_size} days)',
+            xaxis: { title: 'Time' },
+            yaxis: { 
+                title: 'Activity (number of messages)',
+                range: [0, Math.max(...[{activity_over_time}])]
+             }
+        };
+        Plotly.newPlot('scatter1', data, layout, { staticPlot: false });
     </script>
 </body>
 </html>
